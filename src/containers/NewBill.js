@@ -23,29 +23,40 @@ export default class NewBill {
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
-    formData.append('email', email)
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({key}) => {
-        console.log(fileUrl)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      }).catch(error => console.error(error))
+
+
+    // Adding file format condition.
+    const fileExtension = fileName.slice((Math.max(0, fileName.lastIndexOf(".")) || Infinity) + 1)
+    const allowedExtensions = /(jpg|jpeg|png)$/i;
+
+    if ( !allowedExtensions.exec(fileExtension)) {
+      e.target.value = ''
+      alert( "Only jpeg, jpg and png file are accepted")
+    }else{
+      formData.append('file', file)
+      formData.append('email', email)
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true
+          }
+        })
+        .then(({key}) => {
+          console.log(fileUrl)
+          this.billId = key
+          this.fileUrl = fileUrl
+          this.fileName = fileName
+        }).catch(error => console.error(error))
+
+    }
+
   }
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
-    console.log(this.fileUrl);
-    console.log(this.fileName);
     const bill = {
       email,
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
@@ -59,7 +70,6 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
-    console.log(bill);
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }

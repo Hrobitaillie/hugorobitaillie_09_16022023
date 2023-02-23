@@ -6,8 +6,11 @@ export default class NewBill {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
+    // Get New bill form, add submit Event Listener
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`)
     formNewBill.addEventListener("submit", this.handleSubmit)
+
+    // Get File element from new bill form
     const file = this.document.querySelector(`input[data-testid="file"]`)
     file.addEventListener("change", this.handleChangeFile)
     this.fileUrl = null
@@ -15,6 +18,10 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+
+  // Detect when File is updated
+  // Handle file format condition
+  // then save billID, fileUrl and fileName in constructor
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
@@ -51,8 +58,8 @@ export default class NewBill {
         }).catch(error => console.error(error))
 
     }
-
   }
+  
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)

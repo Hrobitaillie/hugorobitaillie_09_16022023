@@ -23,7 +23,6 @@ export default class {
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url")
     const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
-    console.log(billUrl);
     $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`)
     $('#modaleFile').modal('show')
   }
@@ -31,17 +30,26 @@ export default class {
   getBills = () => {
     if (this.store) {
       return this.store
-      .bills()
-      .list()
+      .bills() // get Bills in store
+      .list() // get Bills list in mockedBills
       .then(snapshot => {
-        console.log(snapshot);
-        const bills = snapshot
+        console.log(snapshot); // log bills list
+        /* 
+          Sort bills by date from recent to older
+          Then save it inside bills const
+        */
+        const bills = snapshot 
           .sort(function(a, b) {
             var dateA = new Date(a.date);
             var dateB = new Date(b.date);
             return dateB - dateA;
           })
+          /*
+            Then we map on  bills list and for each bill (doc)
+            We format data adn status
+          */
           .map(doc => {
+            console.log("doc: ", doc);
             try {
               return {
                 ...doc,

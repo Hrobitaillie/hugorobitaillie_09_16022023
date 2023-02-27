@@ -33,13 +33,18 @@ export default class NewBill {
 
 
     // Adding file format condition.
-    const fileExtension = fileName.slice((Math.max(0, fileName.lastIndexOf(".")) || Infinity) + 1)
-    const allowedExtensions = /(jpg|jpeg|png)$/i;
+    const fileExtension = file.name.split('.').pop()
+    const allowedExtensions = ["jpg", "jpeg", "png"];
 
-    if ( !allowedExtensions.exec(fileExtension)) {
-      e.target.value = ''
-      alert( "Only jpeg, jpg and png file are accepted")
+    if ( !allowedExtensions.includes(fileExtension)) {
+      console.log(fileExtension);
+      e.target.value = ""
+      e.target.classList.add('invalid');
+
     }else{
+      if (e.target.classList.contains('invalid')) {
+        e.target.classList.remove('invalid');
+      }
       formData.append('file', file)
       formData.append('email', email)
       this.store

@@ -127,9 +127,6 @@ describe("Given I am connected as an employee", () => {
           fileName: "preview-facture-free-201801-pdf-1.jpg",
           status: 'pending'
         }
-
-        
-
       })
 
     })

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import router from "../app/Router.js";
-import { screen , waitFor} from "@testing-library/dom"
+import { screen , waitFor, fireEvent} from "@testing-library/dom"
 import userEvent from '@testing-library/user-event';
 import store from "../__mocks__/store";
 
@@ -14,8 +14,8 @@ import {localStorageMock} from "../__mocks__/localStorage.js";
 describe("Given I am connected as an employee", () => {
 
   describe("When I am on NewBill Page", () => {
-
     beforeEach(() => {
+
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -33,7 +33,6 @@ describe("Given I am connected as an employee", () => {
     })
 
     describe("When i upload a new file with on of this format: jpg, jpeg, png", () => {
-
       test("Then file should be updated and saved in bill", async() => {
         document.body.innerHTML = NewBillUI()
 
@@ -108,30 +107,39 @@ describe("Given I am connected as an employee", () => {
         expect(fileInput.classList.contains('invalid')).toBeTruthy();
       })
     })
+  })
 
-    describe("when i submit the new bill form", () => {
+  // Test API
+  describe("when i submit the new bill form", () => {
+    beforeEach(() => {
 
-      test("then a new bill shoud be created and saved", async () => {
+      jest.spyOn(store, "bills");
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.appendChild(root);
+      router();
+    });
 
-        const bill = {
-          id: "47qAXb6fIm2zOKkLzMro",
-          email: "test@test.com",
-          type: "Hôtel et logement",
-          name: "Jest Test Bill" ,
-          amount: 300,
-          date:  new Date(),
-          vat: "666",
-          pct: 666,
-          commentary: "",
-          fileUrl: "https://kultt.fr/wp-content/uploads/2022/09/RickAstley-ad2022.jpg",
-          fileName: "preview-facture-free-201801-pdf-1.jpg",
-          status: 'pending'
-        }
+    test("then a new bill shoud be created and saved", async () => {
 
-        
-
+      document.body.innerHTML = NewBillUI()
+      const content = new NewBill({
+          document,
+          onNavigate,
+          store : store,
+          localStorage : localStorageMock
       })
+      const handleSubmit = jest.fn(content.handleSubmit)
 
+      const form = screen.getByTestId("form-new-bill");
+      form.addEventListener("submit", handleSubmit);
+      fireEvent.submit(form);
+
+      expect(store.bills).toHaveBeenCalled()
     })
 
   })

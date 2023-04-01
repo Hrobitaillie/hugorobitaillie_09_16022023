@@ -33,7 +33,7 @@ export default class {
       .bills() // get Bills in store
       .list() // get Bills list in mockedBills
       .then(snapshot => {
-        console.log(snapshot); // log bills list
+        // console.log(snapshot); // log bills list
         /* 
           Sort bills by date from recent to older
           Then save it inside bills const
@@ -49,7 +49,7 @@ export default class {
             We format data adn status
           */
           .map(doc => {
-            console.log("doc: ", doc);
+            // console.log("doc: ", doc);
             try {
               return {
                 ...doc,
@@ -59,7 +59,7 @@ export default class {
             } catch(e) {
               // if for some reason, corrupted data was introduced, we manage here failing formatDate function
               // log the error and return unformatted date in that case
-              console.log(e,'for',doc)
+              // console.log(e,'for',doc)
               return {
                 ...doc,
                 date: doc.date,
@@ -67,8 +67,7 @@ export default class {
               }
             }
           })
-          
-          console.log('length', bills.length)
+
         return bills
       })
     }
